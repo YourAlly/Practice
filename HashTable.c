@@ -12,9 +12,9 @@ typedef struct node
 } node;
 
 // Looks like a gun lmao
-void get_input(node *table[MAX_HASH], int num, node *temp);
 void hash_insert(node *table[MAX_HASH], int hash, node *temp);
 void free_table(node *table[MAX_HASH], int num);
+void get_input(node *table[MAX_HASH]);
 void free_list(node *listp);
 int hash_get(node *nodep);
 
@@ -23,7 +23,6 @@ int main(void)
     int num, inpt;
     bool isrunning = true;
     node *table[MAX_HASH];
-    node *temp = NULL;
 
     for (int i = 0; i < MAX_HASH; i++)
     {
@@ -41,17 +40,16 @@ int main(void)
         scanf("%i", &inpt);
         if (inpt == 1)
         {
-            printf("How many names?: ");
-            scanf("%i", &num);
-            get_input(table, num, temp);
+
+            get_input(table);
         }
         else if (inpt == 2)
         {
-
+            // TODO
         }
         else if (inpt == 3)
         {
-
+            // TODO
         }
         else
         {
@@ -63,10 +61,19 @@ int main(void)
     free_table(table, MAX_HASH);
 }
 
-void get_input(node *table[MAX_HASH], int num, node *temp)
+void get_input(node *table[MAX_HASH])
 {
-    int hash;
+    int hash, num;
+    node *temp = NULL;
     char *name = malloc(30 * sizeof(char));
+    if (name == NULL)
+    {
+        printf("malloc() GAE (name)");
+        exit(1);
+    }
+
+    printf("How many names?: ");
+    scanf("%i", &num);
 
     for (int i = 0; i < num; i++)
     {
