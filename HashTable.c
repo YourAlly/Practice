@@ -40,7 +40,6 @@ int main(void)
         scanf("%i", &inpt);
         if (inpt == 1)
         {
-
             get_input(table);
         }
         else if (inpt == 2)
@@ -59,6 +58,7 @@ int main(void)
     while(isrunning);
 
     free_table(table, MAX_HASH);
+    
 }
 
 void get_input(node *table[MAX_HASH])
@@ -74,7 +74,6 @@ void get_input(node *table[MAX_HASH])
 
     printf("How many names?: ");
     scanf("%i", &num);
-
     for (int i = 0; i < num; i++)
     {
         temp = malloc(sizeof(node));
@@ -103,7 +102,7 @@ int hash_get(node *nodep)
     int hash_num = 0;
     hash_num = strlen(nodep->name);
 
-    return hash_num % MAX_HASH;
+    return (hash_num - 1) % MAX_HASH;
 }
 
 void hash_insert(node *table[MAX_HASH], int hash, node *temp)
@@ -125,8 +124,8 @@ void free_table(node *table[MAX_HASH], int num)
         return;
     }
 
-    free_table(table, num -1);
-    free_list(table[num-1]);
+    free_table(table, num - 1);
+    free_list(table[num - 1]);
 }
 
 void free_list(node *listp)
