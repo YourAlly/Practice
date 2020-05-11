@@ -42,13 +42,12 @@ int main(void)
         scanf("%s", name);
         strcpy(tmp->name, name);
         tmp->next = NULL;
-
-        tmp = list->next;
-        list->next = tmp;
+        
+        c->next = tmp;
+        c = tmp;
     }
 
     tmp = list->next;
-
     while (tmp != NULL)
     {
         printf("%s\n", tmp->name);
