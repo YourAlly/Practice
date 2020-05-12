@@ -13,38 +13,25 @@ typedef struct node
 } node;
 
 // Function prototypes
-void get_input(node *table[MAX_HASH]);
-void table_insert(node *index, node *temp);
-
+void insert_input(node *table[MAX_HASH]);
+void table_insert(node *table[MAX_HASH], node *temp, int hash);
 void table_search(node *table[MAX_HASH], char *word);
-bool go_to_find(node *index, char *word);
-
 void traverse_table(node *table[MAX_HASH], int num);
 void traverse_list(node *index);
-
 void free_table(node *table[MAX_HASH], int num);
 void free_list(node *listp);
+
+bool go_to_find(node *index, char *word
 
 int hash_get(char *word);
 
 int main(void)
 {
-    char word[20];
+    char word[30];
     int inpt;
     bool isrunning = true;
-    node *table[MAX_HASH];
+    node *table[MAX_HASH] = {NULL};
 
-    for (int i = 0; i < MAX_HASH; i++)
-    {
-        table[i] = malloc(sizeof(node));
-        if (table[i] == NULL)
-        {
-            printf("malloc() GAE (table)");
-            return 1;
-        }
-        table[i]->next = NULL;
-    }
-    
     do
     {
         printf("[1] INSERT TO TABLE\n[2] FIND IN TABLE\n[3] SHOWTABLE\n[Else] DONE\n>>>");
@@ -52,7 +39,7 @@ int main(void)
 
         if (inpt == 1)
         {
-            get_input(table);
+            insert_input(table);
         }
         else if (inpt == 2)
         {
@@ -74,7 +61,7 @@ int main(void)
     free_table(table, MAX_HASH);
 }
 
-void get_input(node *table[MAX_HASH])
+void insert_input(node *table[MAX_HASH])
 {
     int hash, num;
     node *temp = NULL;
@@ -96,7 +83,7 @@ void get_input(node *table[MAX_HASH])
             printf("malloc() GAE (temp)");
             exit(1);
         }
-
+        temp->next = NULL;
         do
         {
         printf("Enter text here: ");
@@ -106,7 +93,8 @@ void get_input(node *table[MAX_HASH])
         strcpy(temp->name, name);
 
         hash = hash_get(temp->name);
-        table_insert(table[hash], temp);
+        table_insert(table, temp, hash);
+
     }
     free(name);
 }
@@ -119,18 +107,19 @@ int hash_get(char *word)
     return (hash_num - 1) % MAX_HASH;
 }
 
-void table_insert(node *index, node *temp)
+void table_insert(node *table[MAX_HASH], node *temp, int hash)
 {
-    if (index->next == NULL)
-    {
-        index->next = temp;
-    }
-    else
-    {
-        temp->next = index->next;
-        index->next = temp;
-    }
+    if (table[hash] == NULL)
+        {
+            table[hash] = temp;
+        }
+        else
+        {
+            temp->next = table[hash];
+            table[hash] = temp;
+        }
 }
+
 
 void table_search(node *table[MAX_HASH], char *word)
 {
@@ -174,11 +163,11 @@ void traverse_table(node *table[MAX_HASH], int num)
 
 void traverse_list(node *index)
 {
-    if (index->next == NULL)
+    if (index == NULL)
     {
         return;
     }
-    printf("%s\n", index->next->name);
+    printf("%s\n", index->name);
     traverse_list(index->next);
 }
 
