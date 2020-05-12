@@ -44,6 +44,7 @@ int main(void)
         }
         table[i]->next = NULL;
     }
+    
     do
     {
         printf("[1] INSERT TO TABLE\n[2] FIND IN TABLE\n[3] SHOWTABLE\n[Else] DONE\n>>>");
@@ -87,7 +88,6 @@ void get_input(node *table[MAX_HASH])
     printf("How many names?: ");
     scanf("%i", &num);
 
-    while (isdigit(num) > 0);
     for (int i = 0; i < num; i++)
     {
         temp = malloc(sizeof(node));
