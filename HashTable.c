@@ -21,9 +21,9 @@ void traverse_list(node *index);
 void free_table(node *table[MAX_HASH], int num);
 void free_list(node *listp);
 
-bool go_to_find(node *index, char *word
+bool go_to_find(node *index, char *word);
 
-int hash_get(char *word);
+unsigned int hash_get(const char *word);
 
 int main(void)
 {
@@ -99,12 +99,18 @@ void insert_input(node *table[MAX_HASH])
     free(name);
 }
 
-int hash_get(char *word)
+// https://en.wikipedia.org/wiki/Fowler-Noll-Vo_hash_function
+unsigned int hash_get(const char *word)
 {
-    int hash_num = 0;
-    hash_num = strlen(word);
+    unsigned int h = 2166136261; // FNV_OFFSET_BASIS
+    const unsigned char* ptr = (const unsigned char *)word;
 
-    return (hash_num - 1) % MAX_HASH;
+    while (*ptr)
+    {
+            h = (*ptr++ ^ h) * 16777619; // FNV_PRIME
+    }
+
+    return h % MAX_HASH;
 }
 
 void table_insert(node *table[MAX_HASH], node *temp, int hash)
