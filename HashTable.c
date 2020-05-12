@@ -5,7 +5,6 @@
 #include <ctype.h>
 
 #define MAX_HASH 9
-#define MAX_LENGTH 45
 
 typedef struct node
 {
@@ -30,11 +29,22 @@ int hash_get(char *word);
 
 int main(void)
 {
-    char word[MAX_LENGTH];
+    char word[20];
     int inpt;
     bool isrunning = true;
     node *table[MAX_HASH];
 
+    for (int i = 0; i < MAX_HASH; i++)
+    {
+        table[i] = malloc(sizeof(node));
+        if (table[i] == NULL)
+        {
+            printf("malloc() GAE (table)");
+            return 1;
+        }
+        table[i]->next = NULL;
+    }
+    
     do
     {
         printf("[1] INSERT TO TABLE\n[2] FIND IN TABLE\n[3] SHOWTABLE\n[Else] DONE\n>>>");
@@ -68,7 +78,7 @@ void get_input(node *table[MAX_HASH])
 {
     int hash, num;
     node *temp = NULL;
-    char *name = malloc(MAX_LENGTH * sizeof(char));
+    char *name = malloc(30 * sizeof(char));
     if (name == NULL)
     {
         printf("malloc() GAE (name)");
@@ -111,14 +121,14 @@ int hash_get(char *word)
 
 void table_insert(node *index, node *temp)
 {
-    if (index == NULL)
+    if (index->next == NULL)
     {
-        index = temp;
+        index->next = temp;
     }
     else
     {
-        temp->next = index;
-        index = temp;
+        temp->next = index->next;
+        index->next = temp;
     }
 }
 
@@ -164,11 +174,11 @@ void traverse_table(node *table[MAX_HASH], int num)
 
 void traverse_list(node *index)
 {
-    if (index== NULL)
+    if (index->next == NULL)
     {
         return;
     }
-    printf("%s\n", index->name);
+    printf("%s\n", index->next->name);
     traverse_list(index->next);
 }
 
