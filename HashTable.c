@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #define MAX_HASH 9
 
@@ -11,16 +12,25 @@ typedef struct node
     struct node *next;
 } node;
 
-// Looks like a gun lmao
-void hash_insert(node *table[MAX_HASH], int hash, node *temp);
-void free_table(node *table[MAX_HASH], int num);
+// Function prototypes
 void get_input(node *table[MAX_HASH]);
+void table_insert(node *table[MAX_HASH], int hash, node *temp);
+
+void table_search(node *table[MAX_HASH], char *word);
+bool go_to_find(node *index, char *word);
+
+void traverse_table(node *table[MAX_HASH], int num);
+void traverse_list(node *index);
+
+void free_table(node *table[MAX_HASH], int num);
 void free_list(node *listp);
-int hash_get(node *nodep);
+
+int hash_get(char *word);
 
 int main(void)
 {
-    int num, inpt;
+    char word[20];
+    int inpt;
     bool isrunning = true;
     node *table[MAX_HASH];
 
@@ -38,17 +48,20 @@ int main(void)
     {
         printf("[1] INSERT TO TABLE\n[2] FIND IN TABLE\n[3] SHOWTABLE\n[Else] DONE\n>>>");
         scanf("%i", &inpt);
+
         if (inpt == 1)
         {
             get_input(table);
         }
         else if (inpt == 2)
         {
-            // TODO
+            printf("ENTER WORD TO BE SEARCHED: ");
+            scanf("%s", word);
+            table_search(table, word);
         }
         else if (inpt == 3)
         {
-            // TODO
+            traverse_table(table, MAX_HASH);
         }
         else
         {
@@ -58,7 +71,6 @@ int main(void)
     while(isrunning);
 
     free_table(table, MAX_HASH);
-    
 }
 
 void get_input(node *table[MAX_HASH])
@@ -74,6 +86,8 @@ void get_input(node *table[MAX_HASH])
 
     printf("How many names?: ");
     scanf("%i", &num);
+
+    while (isdigit(num) > 0);
     for (int i = 0; i < num; i++)
     {
         temp = malloc(sizeof(node));
@@ -91,21 +105,21 @@ void get_input(node *table[MAX_HASH])
         while (strlen(name) > MAX_HASH);
         strcpy(temp->name, name);
 
-        hash = hash_get(temp);
-        hash_insert(table, hash, temp);
+        hash = hash_get(temp->name);
+        table_insert(table, hash, temp);
     }
     free(name);
 }
 
-int hash_get(node *nodep)
+int hash_get(char *word)
 {
     int hash_num = 0;
-    hash_num = strlen(nodep->name);
+    hash_num = strlen(word);
 
     return (hash_num - 1) % MAX_HASH;
 }
 
-void hash_insert(node *table[MAX_HASH], int hash, node *temp)
+void table_insert(node *table[MAX_HASH], int hash, node *temp)
 {
     if (table[hash]->next == NULL)
     {
@@ -116,6 +130,55 @@ void hash_insert(node *table[MAX_HASH], int hash, node *temp)
         temp->next = table[hash]->next;
         table[hash]->next = temp;
     }
+}
+
+void table_search(node *table[MAX_HASH], char *word)
+{
+    int hash = hash_get(word);
+    bool isfound = go_to_find(table[hash], word);
+    if(isfound)
+    {
+        printf("at %i index.\n", hash);
+    }
+    else
+    {
+        printf("NOT FOUND\n");
+    }
+}
+
+bool go_to_find(node *index, char *word)
+{
+    if (index == NULL)
+    {
+        return false;
+    }
+
+    if (strcmp(index->name, word) == 0)
+    {
+        printf("%s is found! ", word);
+        return true;
+    }
+    return go_to_find(index->next, word);
+}
+
+void traverse_table(node *table[MAX_HASH], int num)
+{
+    if (num == 0){
+        return;
+    }
+
+    traverse_table(table, num - 1);
+    traverse_list(table[num - 1]);
+}
+
+void traverse_list(node *index)
+{
+    if (index->next == NULL)
+    {
+        return;
+    }
+    printf("%s\n", index->next->name);
+    traverse_list(index->next);
 }
 
 void free_table(node *table[MAX_HASH], int num)
