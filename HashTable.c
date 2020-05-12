@@ -14,7 +14,7 @@ typedef struct node
 
 // Function prototypes
 void get_input(node *table[MAX_HASH]);
-void table_insert(node *table[MAX_HASH], int hash, node *temp);
+void table_insert(node *index, node *temp);
 
 void table_search(node *table[MAX_HASH], char *word);
 bool go_to_find(node *index, char *word);
@@ -106,7 +106,7 @@ void get_input(node *table[MAX_HASH])
         strcpy(temp->name, name);
 
         hash = hash_get(temp->name);
-        table_insert(table, hash, temp);
+        table_insert(table[hash], temp);
     }
     free(name);
 }
@@ -119,16 +119,16 @@ int hash_get(char *word)
     return (hash_num - 1) % MAX_HASH;
 }
 
-void table_insert(node *table[MAX_HASH], int hash, node *temp)
+void table_insert(node *index, node *temp)
 {
-    if (table[hash]->next == NULL)
+    if (index->next == NULL)
     {
-        table[hash]->next = temp;
+        index->next = temp;
     }
     else
     {
-        temp->next = table[hash]->next;
-        table[hash]->next = temp;
+        temp->next = index->next;
+        index->next = temp;
     }
 }
 
@@ -138,7 +138,7 @@ void table_search(node *table[MAX_HASH], char *word)
     bool isfound = go_to_find(table[hash], word);
     if(isfound)
     {
-        printf("at %i index.\n", hash);
+        printf("at [%i] index.\n", hash);
     }
     else
     {
@@ -158,6 +158,7 @@ bool go_to_find(node *index, char *word)
         printf("%s is found! ", word);
         return true;
     }
+
     return go_to_find(index->next, word);
 }
 
