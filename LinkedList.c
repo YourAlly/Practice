@@ -1,70 +1,52 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-typedef struct node
-{
-    char name[32];
-    struct node *next;
-} node;
+typedef struct node {
+	int num;
+	struct node* next;
+}node;
 
-void freelist(node *listp);
+void print_and_free_list(node* head);
 
 int main(void)
 {
-    int num;
-    char *name = malloc(32 * sizeof(char));
-    node *list, *tmp, *c;
+    int nums;
+	node* temp = NULL;
+	node* head = NULL;
+	node* c = NULL;
 
-    list = malloc(sizeof(node));
-    if (list == NULL)
-    {
-        printf("MALLOC GAE");
-        return 1;
-    }
+    printf("How many Numbers?: ");
+    scanf("%i", &nums);
+	for (int i = 0; i < nums; i++)
+	{
+		temp = malloc(sizeof(node));
+		if (temp == NULL){
+		    printf("Unable to Allocate Memory");
+		    return 1;
+		}
+		temp->next = NULL;
+		scanf("%i", &temp->num);
 
-    list->next = NULL;
-    c = list;
-
-    printf("Number of names?: ");
-    scanf("%i", &num);
-
-    for (int i = 0; i < num; i++)
-    {
-        tmp = malloc(sizeof(node));
-        if (tmp == NULL)
-        {
-            printf("MALLOC GAE");
-            return 1;
-        }
-
-        printf("PLEASE ENTER NAME HERE: ");
-        scanf("%s", name);
-        strcpy(tmp->name, name);
-        tmp->next = NULL;
-        
-        c->next = tmp;
-        c = tmp;
-    }
-
-    tmp = list->next;
-    while (tmp != NULL)
-    {
-        printf("%s\n", tmp->name);
-        tmp = tmp->next;
-    }
-
-    freelist(list);
-    free(name);
+		if (head == NULL)
+		{
+			head = temp;
+			c = head;
+		}
+		else {
+			c->next = temp;
+			c = c->next;
+		}
+	}
+    print_and_free_list(head);
 }
 
-void freelist(node *listp)
+void print_and_free_list(node* head)
 {
-    if (listp == NULL)
-    {
-        return;
-    }
+    if (head == NULL) {
+		return;
+	}
 
-    freelist(listp->next);
-    free(listp);
+	printf("%i \n", head->num);
+	free(head);
+	print_and_free_list(head->next);
 }
