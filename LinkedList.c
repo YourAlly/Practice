@@ -43,7 +43,7 @@ int main(void)
 void print_and_free_list(node* head)
 {
     if (head == NULL) {
-		return;
+	return;
 	}
 
 	printf("%i \n", head->num);
